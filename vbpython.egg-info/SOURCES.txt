@@ -1,0 +1,11 @@
+CHANGELOG.txt
+LICENCE.txt
+MANIFEST.in
+README.txt
+__init__.py
+setup.py
+var.txt
+vbpython.egg-info/PKG-INFO
+vbpython.egg-info/SOURCES.txt
+vbpython.egg-info/dependency_links.txt
+vbpython.egg-info/top_level.txt
