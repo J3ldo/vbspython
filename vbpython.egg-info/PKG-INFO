@@ -4,16 +4,15 @@ Version: 0.0.2
 Summary: A python module to make .vbs code
 Home-page: UNKNOWN
 Author: J3ldo
-Author-email: Please use discord Jeldo#9587
+Author-email: 
 License: MIT
 Keywords: vbscript vbs
 Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable
 Classifier: Intended Audience :: Education
-Classifier: Operating System :: Microsoft :: Windows :: Windows 7/8/10/11
+Classifier: Operating System :: Microsoft :: Windows :: Windows 10
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Programming Language :: Python :: 3
-License-File: LICENCE.txt
 
 Make vbscript code in python
 

@@ -1,10 +1,10 @@
-CHANGELOG.txt
-LICENCE.txt
 MANIFEST.in
-README.txt
 __init__.py
 setup.py
 var.txt
+packageinformation/CHANGELOG.txt
+packageinformation/LICENCE.txt
+packageinformation/README.txt
 vbpython.egg-info/PKG-INFO
 vbpython.egg-info/SOURCES.txt
 vbpython.egg-info/dependency_links.txt
