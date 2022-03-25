@@ -1,1 +1,0 @@
-Make vbscript code in python
