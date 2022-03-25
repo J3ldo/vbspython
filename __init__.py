@@ -25,7 +25,7 @@ subprocess.call('taskkill /F /IM exename.exe', creationflags=DETACHED_PROCESS)
 
 import subprocess as sub
 import os
-
+from pathlib import Path
 
 class makefile:
     def __init__(self, filename=None):
@@ -37,13 +37,13 @@ class makefile:
 
 
         try: #if the file not exists
-            with open(f'files/{filename2}.vbs', 'x') as f:
+            with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{filename2}.vbs', 'x') as f:
                 pass   #makes the file
         except: #if the file already exists
-            for f in os.listdir('files'):
-                os.remove(os.path.join('files', f)) #clears the directory
+            for f in os.listdir(f'{str(Path( __file__ ).absolute())[:-11]}\\files'):
+                os.remove(os.path.join(f'{str(Path( __file__ ).absolute())[:-11]}\\files', f)) #clears the directory
 
-            with open(f'files/{filename2}.vbs', 'x') as f: #re-creates the file
+            with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{filename2}.vbs', 'x') as f: #re-creates the file
                 pass
 
 
@@ -51,7 +51,7 @@ class makefile:
     def msgbox(self, text=None, title=None): #make a msgbox
         if text == None: text = "" #if the text, title is None
         if title == None: title = ""
-        with open(f'files/{self.filename}.vbs', 'a') as f: #writes it into the .vbs file
+        with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f: #writes it into the .vbs file
             f.write(f'msgbox \"{text}\",,\"{title}\"\n')
 
 
@@ -59,7 +59,7 @@ class makefile:
         if text == None: text = ""
         if title == None: title = ""
         self.inputvar = getvar
-        with open(f'files/{self.filename}.vbs', 'a') as f:
+        with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
             if not getvar:
                 f.write(f'Inputbox \"{text}\",\"{title}\"\n')
             elif getvar:
@@ -75,34 +75,31 @@ class makefile:
 
 
 
-        if not getvar:
-            return
-        elif getvar:
-            with open('var.txt', 'r') as r:
-                self.inpvar = r.readline()
 
 
     def run(self, deletefile=True, showprompt=False): #runs the file
         if showprompt:
-            sub.run(f'cscript files/{self.filename}.vbs')
+            sub.run(f'cscript {str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs')
             if deletefile:
-                os.remove(f'files/{self.filename}.vbs')
+                os.remove(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs')
 
         elif not showprompt:
-            sub.run(f'cscript files/{self.filename}.vbs', creationflags=0x08000000) #turns off the prompt
+            sub.run(f'cscript {str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', creationflags=0x08000000) #turns off the prompt
             if deletefile:
-                os.remove(f'files/{self.filename}.vbs')
+                os.remove(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs')
         else:
             print('something went wrong')
 
         if self.inputvar:
+            with open(f'{str(Path( __file__ ).absolute())[:-11]}\\var.txt', 'r') as r:
+                self.inpvar = r.readline()
             return self.inpvar #returns the inpvar given
         return
 
     def delete(self, file='file', allfiles=False):
         if allfiles:
-            for i in os.listdir('files'):
-                os.remove(os.path.join('files', i))
+            for i in os.listdir(f'{str(Path( __file__ ).absolute())[:-11]}\\files'):
+                os.remove(os.path.join(f'{str(Path( __file__ ).absolute())[:-11]}\\files', i))
 
         if not allfiles:
-            os.remove(f'files/{file}.vbs')
+            os.remove(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{file}.vbs')
