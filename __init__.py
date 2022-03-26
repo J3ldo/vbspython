@@ -40,11 +40,20 @@ class makefile:
             with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{filename2}.vbs', 'x') as f:
                 pass   #makes the file
         except: #if the file already exists
-            for f in os.listdir(f'{str(Path( __file__ ).absolute())[:-11]}\\files'):
-                os.remove(os.path.join(f'{str(Path( __file__ ).absolute())[:-11]}\\files', f)) #clears the directory
+            try:
+                for f in os.listdir(f'{str(Path( __file__ ).absolute())[:-11]}\\files'):
+                    os.remove(os.path.join(f'{str(Path( __file__ ).absolute())[:-11]}\\files', f)) #clears the directory
 
-            with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{filename2}.vbs', 'x') as f: #re-creates the file
-                pass
+                with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{filename2}.vbs', 'x') as f: #re-creates the file
+                    pass
+            except:
+                os.mkdir(f'{str(Path( __file__ ).absolute())[:-11]}\\files')
+                with open(f'{str(Path( __file__ ).absolute())[:-11]}\\var.txt', "x"):
+                    pass
+
+                with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{filename2}.vbs', 'x') as f:  # re-creates the file
+                    pass
+
 
 
 
@@ -53,6 +62,27 @@ class makefile:
         if title == None: title = ""
         with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f: #writes it into the .vbs file
             f.write(f'msgbox \"{text}\",,\"{title}\"\n')
+
+    def system(self, cmd, showprompt=False, getouput=False):
+        if not showprompt: sprompt = ", 0, True"
+        if showprompt: sprompt = ""
+        if getouput: self.inputvar = True
+        with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            if getouput:
+                f.write("Set oShell = CreateObject (\"WScript.Shell\")\n"
+                    f"Set out = oShell.Exec(\"cmd.exe /C {cmd}\")\n"
+                    f"all = out.StdOut.ReadAll\n"
+                    'a = Left(wscript.scriptfullname, Len(wscript.scriptfullname) - '
+                    'Len(wscript.scriptname) - 6)\n'
+                    'Set fleobj = CreateObject(\"Scripting.FileSystemObject\")'
+                    '.OpenTextFile(a & \"var.txt\",2)\n'
+                    f'fleobj.WriteLine(all)\n'
+                    f'fleobj.close\n'
+                    f'Set fleobj = Nothing\n'
+                        )
+            else:
+                f.write("Set oShell = CreateObject (\"WScript.Shell\")\n"
+                        f"oShell.Run \"cmd.exe /C {cmd}\" {sprompt}\n")
 
 
     def input(self, text=None, title=None, getvar=False): #pretty much the same as msgbox
@@ -73,9 +103,75 @@ class makefile:
                         f'Set fleobj = Nothing\n')
 
 
+    def presskeys(self, keys):
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            f.write(
+                f"set oShell = Createobject(\"wscript.shell\")\n"
+                f"oShell.sendkeys(\"{keys}\")\n"
+            )
 
+    def sleep(self, amount):
+        amount *= 1000
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            f.write(
+                f"set oShell = Createobject(\"wscript.shell\")\n"
+                f"wscript.sleep {amount}\n"
+            )
 
+    def presskey(self, key=None):
+        if key == None:
+            print(
+                  "List of keys:\n"
+                  """
+Key	            Code
+Backspace:	    BACKSPACE, BKSP or: BS
+Break:	        BREAK
+Caps Lock:  	CAPSLOCK
+Delete	        DELETE or: DEL
+Down Arrow:	    DOWN
+End:	        END
+Enter:          ENTER or ~
+Escape:      	ESC
+Help:	        HELP
+Home:	        HOME
+Insert:	        INSERT or INS
+Left Arrow:	    LEFT
+Num Lock:	    NUMLOCK
+Page Down:	    PGDN
+Page Up:	    PGUP
+Print Screen:	PRTSC
+Right Arrow:	RIGHT
+Scroll Lock:    SCROLLLOCK
+Tab:	        TAB
+Up Arrow:       UP
+F1: 	        F1
+F2: 	        F2
+F3: 	        F3
+F4: 	        F4
+F5: 	        F5
+F6: 	        F6
+F7:  	        F7
+F8:       	    F8
+F9: 	        F9
+F10:            F10
+F11:            F11
+F12:            F12
+F13:            F13
+F14:            F14
+F15:            F15
+F16:            F16
+                  """
+            )
+            return
 
+        key_to_send1 = "{"
+        key_to_send2 = "}"
+
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            f.write(
+                f"set oShell = Createobject(\"wscript.shell\")\n"
+                f"oShell.sendkeys(\"{key_to_send1}{key}{key_to_send2}\")\n"
+            )
 
     def run(self, deletefile=True, showprompt=False): #runs the file
         if showprompt:
@@ -92,7 +188,7 @@ class makefile:
 
         if self.inputvar:
             with open(f'{str(Path( __file__ ).absolute())[:-11]}\\var.txt', 'r') as r:
-                self.inpvar = r.readline()
+                self.inpvar = r.read()
             return self.inpvar #returns the inpvar given
         return
 
