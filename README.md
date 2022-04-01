@@ -46,7 +46,7 @@ import vbspython
 print(vbspython.input("What do you think of this library?")) #will print the input the user gave
 ```
 
-### Pressing keeys
+### Pressing keys
 ```python
 import vbspython
 
@@ -63,7 +63,7 @@ import vbspython
 
 file = vbspython.makefile()
 
-@file.loop()
+@file.loop
 def loop_this():
    file.msgbox("I am indestructable!")
 
