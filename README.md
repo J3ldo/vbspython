@@ -52,7 +52,6 @@ import vbspython
 
 file = vbspython.makefile()
 file.sleep(1) #sleep is in seconds. This will sleep the python file and the vbs file
-file.system("notepad") #opens notepad
 file.presskeys("Hello world!")
 file.presskey("enter") #Will press enter. To get a list of keys leave empty
 file.run()
