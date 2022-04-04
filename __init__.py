@@ -31,13 +31,58 @@ import ast
 #print(os.path.abspath("main.py"))
 #print(os.path.abspath("main.py").split("\\")[-1])
 
+class dontusethispls:
+    def __init__(self, outer):
+        self.outer = outer
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.outer.filename}.vbs', 'a') as f:
+            f.write(
+                "Set tts = CreateObject(\"SAPI.SpVoice\")\n"
+            )
+
+    def rate(self, rate=0):
+        if int(rate) > 10 or int(rate) < -10:
+            raise Exception("You can't have the rate above 10 or under -10")
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.outer.filename}.vbs', 'a') as f:
+            f.write(
+                f"tts.Rate = {rate}\n"
+            )
+
+    def say(self, text):
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.outer.filename}.vbs', 'a') as f:
+            f.write(
+                f"tts.Speak \"{text}\"\n"
+            )
+
+    def speak(self, text):
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.outer.filename}.vbs', 'a') as f:
+            f.write(
+                f"tts.Speak \"{text}\"\n"
+            )
+
+    def voice(self, speaker):
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.outer.filename}.vbs', 'a') as f:
+            f.write(
+                f"Set tts.Voice = tts.GetVoices.Item({speaker})\n"
+            )
+
+    def volume(self, volume):
+        if int(volume) > 100 or int(volume) < 0:
+            raise Exception("Volume can't be higher then 100 or lower then 0")
+
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.outer.filename}.vbs', 'a') as f:
+            f.write(
+                f"tts.Volume = {volume}\n"
+            )
+
+
+
+
 class makefile:
     def __init__(self, filename=None):
         self.inputvar = False
         filename2 = filename
         if filename == None: filename2 = 'file'
         self.filename = filename2
-
 
 
         try: #if the file not exists
@@ -60,8 +105,8 @@ class makefile:
         with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f: #writes it into the .vbs file
             f.write(f'all_vars = \"[\"\n')
 
-
-
+    def tts(self):
+        return dontusethispls(self)
 
 
     def msgbox(self, text=None, title=None, icon=None, options=None): #make a msgbox
@@ -190,6 +235,17 @@ F16:            F16
             f.write(
                 f"loop\n"
             )
+
+    def runas(self):
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            f.write(
+                "Sub RunAsAdmin()\n"
+                "If WScript.Arguments.Named.Exists(\"RunAsAdmin\") Then Exit Sub\n"
+                "CreateObject(\"Shell.Application\").ShellExecute _\n"
+                "\"WScript.exe\", \"\"\"\" & WScript.ScriptFullName & \"\"\" /RunAsAdmin\",\"\",\"runas\", 1\n"
+                "WScript.Quit()\n"
+                "End Sub\n"
+                "RunAsAdmin()\n")
 
     def filelocation(self):
         return f"{str(Path(__file__).absolute())[:-11]}files\\{self.filename}.vbs"
@@ -442,6 +498,12 @@ def sleep(amount:int):
 
 
 class itemattributes:
+    class tts:
+        def voice_1(self):
+            return "0"
+
+        def voice_2(self):
+            return "1"
     class msgbox:
         class returns:
             def ok(self):
