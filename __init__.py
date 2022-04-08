@@ -27,9 +27,12 @@ import subprocess as sub
 import os
 from pathlib import Path
 import ast
+import time
 
 #print(os.path.abspath("main.py"))
 #print(os.path.abspath("main.py").split("\\")[-1])
+fileids = 0
+
 
 class dontusethispls:
     def __init__(self, outer):
@@ -80,9 +83,12 @@ class dontusethispls:
 class makefile:
     def __init__(self, filename=None):
         self.inputvar = False
+        self.runasadmin = False
         filename2 = filename
-        if filename == None: filename2 = 'file'
+        global fileids
+        if filename == None: filename2 = 'file' if fileids == 0 else f'file{fileids}'
         self.filename = filename2
+        fileids += 1
 
 
         try: #if the file not exists
@@ -142,6 +148,12 @@ class makefile:
                 f.write("Set oShell = CreateObject (\"WScript.Shell\")\n"
                         f"oShell.Run \"cmd.exe /C {cmd}\" {sprompt}\n")
 
+
+    def execute(self, item):
+        with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            f.write("Set oShell = CreateObject (\"WScript.Shell\")\n"
+                    f"oShell.Run \"{item}\"\n"
+                    )
 
     def input(self, text=None, title=None, getvar=True): #pretty much the same as msgbox
         if text == None: text = ""
@@ -247,6 +259,62 @@ F16:            F16
                 "End Sub\n"
                 "RunAsAdmin()\n")
 
+            self.runasadmin = True
+
+
+    def copyfile(self, oldpath, newpath):
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            f.write(
+                f"Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+                f"fso.CopyFile \"{os.path.abspath(oldpath)}\" , \"{os.path.abspath(newpath)}\\\"\n"
+            )
+
+
+    def copyfolder(self, oldpath, newpath):
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            f.write(
+                f"Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+                f"fso.CopyFolder \"{os.path.abspath(oldpath)}\", \"{os.path.abspath(newpath)}\\\"\n"
+            )
+
+
+    def movefile(self, oldpath, newpath):
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            f.write(
+                f"Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+                f"fso.MoveFile \"{os.path.abspath(oldpath)}\" , \"{os.path.abspath(newpath)}\\\"\n"
+            )
+
+
+    def movefolder(self, oldpath, newpath):
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            f.write(
+                f"Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+                f"fso.MoveFolder \"{os.path.abspath(oldpath)}\", \"{os.path.abspath(newpath)}\\\"\n"
+            )
+
+
+    def createfolder(self, path):
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            f.write(
+                f"Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+                f"fso.CreateFolder \"{path}\"\n"
+            )
+
+    def deletefolder(self, path):
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            f.write(
+                f"Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+                f"fso.DeleteFolder \"{os.path.abspath(path)}\"\n"
+            )
+
+    def deletefile(self, path):
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            f.write(
+                f"Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+                f"fso.DeleteFile \"{os.path.abspath(path)}\"\n"
+            )
+
     def filelocation(self):
         return f"{str(Path(__file__).absolute())[:-11]}files\\{self.filename}.vbs"
 
@@ -260,16 +328,26 @@ F16:            F16
 
 
     def run(self, deletefile=True, showprompt=False): #runs the file
-        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:  # writes it into the .vbs file
-            f.write(
-                'all_vars = all_vars + \"]\"\n'
-                'a = Left(wscript.scriptfullname, Len(wscript.scriptfullname) - '
-                'Len(wscript.scriptname) - 6)\n'
-                'Set fleobj = CreateObject(\"Scripting.FileSystemObject\")'
-                '.OpenTextFile(a & \"var.txt\",2)\n'
-                'fleobj.WriteLine(all_vars)\n'
-                'fleobj.close\n'
-                f'Set fleobj = Nothing\n')
+        if self.inputvar:
+            with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:  # writes it into the .vbs file
+                f.write(
+                    'all_vars = all_vars + \"]\"\n'
+                    'a = Left(wscript.scriptfullname, Len(wscript.scriptfullname) - '
+                    'Len(wscript.scriptname) - 6)\n'
+                    'Set fleobj = CreateObject(\"Scripting.FileSystemObject\")'
+                    '.OpenTextFile(a & \"var.txt\",2)\n'
+                    'fleobj.WriteLine(all_vars)\n'
+                    'fleobj.close\n'
+                    f'Set fleobj = Nothing\n')
+
+        if self.runasadmin:
+            sub.run(f'cscript {str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', creationflags=0x08000000)
+            if deletefile:
+                time.sleep(0.2)
+                os.remove(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs')
+            return
+
+
         if showprompt:
             sub.run(f'cscript {str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs')
             if deletefile:
@@ -280,7 +358,7 @@ F16:            F16
             if deletefile:
                 os.remove(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs')
         else:
-            print('something went wrong')
+            print('Something went wrong')
 
         if self.inputvar:
             with open(f'{str(Path( __file__ ).absolute())[:-11]}\\var.txt', 'r') as r:
