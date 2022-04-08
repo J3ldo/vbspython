@@ -70,9 +70,47 @@ def loop_this():
 file.run()
 ```
 
+### Files
+#### Creating files
+##### Creating a folder
+```python
+import vbspython
+
+file = vbspython.makefile()
+
+file.createfolder("C:\Users\MyUser\Myepicfolder") #Myepicfolder will be the folder that will be created
+
+file.run()
+```
+#### Deleting files
+##### Deleting a file
+```python
+import vbspython
+
+file = vbspython.makefile()
+
+file.deletefile("TempFile.py") #Deletes the file TempFile.py
+
+file.run()
+```
+##### Deleting a golder
+```python
+import vbspython
+
+file = vbspython.makefile()
+
+file.deletefolder("AllTempFiles") #Will delete the whole folder and the contents in it
+
+file.deletefile("TempFile.py")
+
+file.run()
+```
+
 ## Changelog  
 0.0.1 - Made vbspython but it doesnt work  
 0.0.2 - Made it work  
 0.0.8 - Made a press keys will press any keys of choice. A sleep that will make the .vbs file sleep. And a presskey that will press a special key leave empty for a list of keys.  
 0.1.0 - Made a help loop and runfile.  
 0.1.1 - Made the getting input system better. Added icons and options in the itemattributes class  
+0.1.2 - Added a runas command this will run the file as administrator. And a tts class with: say, rate, volume (see in attributes), speak (same as say)   
+0.1.3 - Added a copyfile movefile createfolder movefolder deletefolder deletefile copyfolder and did some bug fixes  
