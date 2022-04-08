@@ -71,8 +71,8 @@ file.run()
 ```
 
 ### Files
-#### Creating files
-##### Creating a folder
+### Creating files
+#### Creating a folder
 ```python
 import vbspython
 
@@ -82,8 +82,8 @@ file.createfolder("C:\Users\MyUser\Myepicfolder") #Myepicfolder will be the fold
 
 file.run()
 ```
-#### Deleting files
-##### Deleting a file
+### Deleting files
+#### Deleting a file
 ```python
 import vbspython
 
@@ -93,13 +93,54 @@ file.deletefile("TempFile.py") #Deletes the file TempFile.py
 
 file.run()
 ```
-##### Deleting a golder
+#### Deleting a folder
 ```python
 import vbspython
 
 file = vbspython.makefile()
 
 file.deletefolder("AllTempFiles") #Will delete the whole folder and the contents in it
+
+file.deletefile("TempFile.py")
+
+file.run()
+```
+### Copying and moving
+#### Copy file
+```python
+import vbspython
+
+file = vbspython.makefile()
+
+file.copyfile("Secretfile.txt", "C:\Users") #copies the file to the Users directory
+
+file.run()
+```
+#### Copy folder
+```python
+import vbspython
+
+file = vbspython.makefile()
+
+file.copyfolder("Newuser", "C:\Users") #Copies folder to C:\Users
+
+file.run()
+```
+#### Move file
+```python
+import vbspython
+
+file = vbspython.makefile()
+
+file.deletefile("TempFile.py")
+
+file.run()
+```
+#### Move folder
+```python
+import vbspython
+
+file = vbspython.makefile()
 
 file.deletefile("TempFile.py")
 
