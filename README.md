@@ -132,7 +132,7 @@ import vbspython
 
 file = vbspython.makefile()
 
-file.deletefile("TempFile.py")
+file.movefile("TempFile.py", "Tempfiles") #moves a file
 
 file.run()
 ```
@@ -142,7 +142,7 @@ import vbspython
 
 file = vbspython.makefile()
 
-file.deletefile("TempFile.py")
+file.movefolder("TempFiles", "Logs") #moves the file
 
 file.run()
 ```
