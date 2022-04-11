@@ -572,7 +572,75 @@ def sleep(amount:int):
     file.run()
 
 
+def createfolder(path):
+    file = makefile()
 
+    file.createfolder(path)
+
+    file.run()
+
+def copyfolder(oldpath, newpath):
+    file = makefile()
+
+    file.copyfolder(oldpath, newpath)
+
+    file.run()
+
+def copyfile(oldpath, newpath):
+    file = makefile()
+
+    file.copyfile(oldpath, newpath)
+
+    file.run()
+
+def movefolder(oldpath, newpath):
+    file = makefile()
+
+    file.movefolder(oldpath, newpath)
+
+    file.run()
+
+def movefile(oldpath, newpath):
+    file = makefile()
+
+    file.movefile(oldpath, newpath)
+
+    file.run()
+
+def deletefolder(path):
+    file = makefile()
+
+    file.deletefolder(path)
+
+    file.run()
+
+def deletefile(path):
+    file = makefile()
+
+    file.deletefile(path)
+
+    file.run()
+
+def execute(item):
+    file = makefile()
+
+    file.execute(item)
+
+    file.run()
+
+def speak(text):
+    file = makefile()
+
+    file.tts().speak(text)
+
+    file.run()
+
+def say(text):
+    file = makefile()
+
+    file.tts().say(text)
+
+    file.run()
 
 
 class itemattributes:
