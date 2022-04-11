@@ -308,6 +308,45 @@ F16:            F16
                 f"fso.DeleteFolder \"{os.path.abspath(path)}\"\n"
             )
 
+    def specialfolder(self, folder=None, getvar=True):
+        if folder == None:
+            print(
+                """
+All special folders are:
+This function will give their location on this pc.
+    AllUsersDesktop
+    AllUsersStartMenu
+    AllUsersPrograms
+    AllUsersStartup
+    Desktop
+    Favorites
+    Fonts
+    MyDocuments
+    NetHood
+    PrintHood
+    Programs
+    Recent
+    SendTo
+    StartMenu
+    Startup
+    Templates
+                """
+            )
+            return
+
+
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            f.write(
+               "Set obj = createObject(\"wscript.shell\")\n"
+               f"txt = obj.specialfolders(\"{folder}\")\n"
+            )
+            if getvar:
+                f.write(
+                    f'all_vars = all_vars + \"\"\"\" & txt & \"\"\"\" & \",\"\n'
+                )
+                self.inputvar = True
+
+
     def deletefile(self, path):
         with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
             f.write(
@@ -363,7 +402,11 @@ F16:            F16
         if self.inputvar:
             with open(f'{str(Path( __file__ ).absolute())[:-11]}\\var.txt', 'r') as r:
                 self.inpvar = r.read()
-            return ast.literal_eval(self.inpvar) #returns the inpvar given
+            try:
+                return ast.literal_eval(self.inpvar) #returns the inpvar given
+            except:
+                self.inpvar = self.inpvar.replace('\\', "/")
+                return ast.literal_eval(self.inpvar)  # returns the inpvar given
         return
 
     def delete(self, file=None, allfiles=False):
@@ -642,6 +685,16 @@ def say(text):
 
     file.run()
 
+def specialfolder(folder=None, getvar=True):
+    file = makefile()
+
+    file.specialfolder(folder, getvar)
+
+    if getvar:
+        if folder != None:
+            return file.run()[0]
+        return
+    file.run()
 
 class itemattributes:
     class tts:
