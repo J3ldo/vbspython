@@ -63,10 +63,9 @@ file.run()
 #Dont run like this
 import vbspython as vbs
 file = vbs.makefile()
-file.presskeys("Hello world!")
-file.presskey("ENTER")
+file.msgbox("I am indestructable!")
 
-for i in range(50):
+while True:
     file.run(deletefile=False)
     
 file.delete()
