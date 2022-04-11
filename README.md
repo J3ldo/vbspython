@@ -51,6 +51,7 @@ print(vbspython.input("What do you think of this library?")) #will print the inp
 import vbspython
 
 file = vbspython.makefile()
+file.execute("notepad") #Will open notepad using windows + r
 file.sleep(1) #sleep is in seconds. This will sleep the python file and the vbs file
 file.presskeys("Hello world!")
 file.presskey("enter") #Will press enter. To get a list of keys leave empty
@@ -155,3 +156,4 @@ file.run()
 0.1.1 - Made the getting input system better. Added icons and options in the itemattributes class  
 0.1.2 - Added a runas command this will run the file as administrator. And a tts class with: say, rate, volume (see in attributes), speak (same as say)   
 0.1.3 - Added a copyfile movefile createfolder movefolder deletefolder deletefile copyfolder and did some bug fixes  
+0.1.4 - Added an execute this doesnt stop when opening files like with system
