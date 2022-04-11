@@ -60,6 +60,18 @@ file.run()
 
 ### Looping
 ```python
+#Dont run like this
+import vbspython as vbs
+file = vbs.makefile()
+file.presskeys("Hello world!")
+file.presskey("ENTER")
+
+for i in range(50):
+    file.run(deletefile=False)
+    
+file.delete()
+
+#But like this
 import vbspython
 
 file = vbspython.makefile()
