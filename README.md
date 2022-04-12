@@ -81,7 +81,13 @@ def loop_this():
 
 file.run()
 ```
+###Special folders
+```python
+import vbspython
 
+path = vbspython.specialfolder("Downloads")
+print(path) #Will print the path to downloads could be useful if your downloading things
+```
 ### Files
 ### Creating files
 #### Creating a folder
