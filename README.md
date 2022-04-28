@@ -1,6 +1,8 @@
 # Vbspython
 ### Information
 Vbspython is a python package that lets you interact with vbscript (visual basic script) in python. This can be helpfull if you're learning the language  
+Downloads:  
+[![Downloads](https://pepy.tech/badge/vbspython)](https://pepy.tech/project/vbspython)
 
 ### Installing
 Install it using the console by saying: pip install vbspython  
