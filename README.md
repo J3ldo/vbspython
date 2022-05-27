@@ -91,6 +91,24 @@ import vbspython
 path = vbspython.specialfolder("Downloads")
 print(path) #Will print the path to downloads could be useful if your downloading things
 ```
+### Creating shortcuts
+```python
+import vbspython
+
+shortcut = "picture.png" #If the shortcut is clicked it will open the picture
+location = "./" #Current executing directory
+icon = 20 #put in an integer for the built in icons. Else put in a string with the location to the .ico
+name = "openpicture" #this indicates the name of the shortcut
+
+vbspython.createshortcut(shortcut, location, icon, name)
+print("Succesfully made the shortcut!")
+```
+
+### Creating hotkeys
+```python
+#wip
+```
+
 ### Files
 ### Creating files
 #### Creating a folder
