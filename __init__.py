@@ -21,8 +21,6 @@ subprocess.call('taskkill /F /IM exename.exe', creationflags=DETACHED_PROCESS)
 --Base Process--
 
 '''
-
-
 import subprocess as sub
 import os
 from pathlib import Path
@@ -154,6 +152,26 @@ class makefile:
             f.write("Set oShell = CreateObject (\"WScript.Shell\")\n"
                     f"oShell.Run \"{item}\"\n"
                     )
+
+    def createshortcut(self, filepath, lnkpath, icon, shrtname="shortcut"):
+        if isinstance(icon, int):
+            icon = "%SystemRoot%\System32\SHELL32.dll," + str(icon)
+            with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+                f.write("Set obj = createObject(\"wscript.shell\")\n"
+                        f"Set shrt = obj.CreateShortcut(\"{os.path.abspath(lnkpath+ shrtname + '.lnk')}\")\n"
+                        f"shrt.TargetPath = \"{os.path.abspath(filepath)}\"\n"
+                        f"shrt.IconLocation = \"{icon}\"\n"
+                        "shrt.Save\n"
+                )
+
+            with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+                f.write("Set obj = createObject(\"wscript.shell\")\n"
+                f"Set shrt = obj.CreateShortcut(\"{os.path.abspath(lnkpath)}\")\n"
+                f"shrt.TargetPath = {filepath}\n"
+                f"shrt.IconLocation = \"{os.path.abspath(icon)}\"\n"
+                "shrt.Save\n"
+                    )
+
 
     def input(self, text=None, title=None, getvar=True): #pretty much the same as msgbox
         if text == None: text = ""
@@ -306,6 +324,26 @@ F16:            F16
             f.write(
                 f"Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
                 f"fso.DeleteFolder \"{os.path.abspath(path)}\"\n"
+            )
+
+    def createhotkey(self, execute, hotkey, custom_name=fileids):
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            f.write(
+                f"""
+set obj = WScript.CreateObject(\"WScript.Shell\")
+Desktop = obj.specialfolders(\"Desktop\")
+    
+set shortcut = obj.CreateShortcut(Desktop & \"\\vbspythonhotkey_{custom_name}.lnk\")
+shortcut.TargetPath = \"{os.path.abspath(execute)}\"
+shortcut.Hotkey = \"{hotkey}\"
+shortcut.IconLocation = "notepad.exe, 0"
+shortcut.WorkingDirectory = \"C:\\\"
+shortcut.Save
+    
+Set fso = CreateObject(\"Scripting.FileSystemObject\")
+
+fso.GetFile(Desktop & \"\\vbspythonhotkey_{custom_name}.lnk\").Attributes = 34
+                """
             )
 
     def specialfolder(self, folder=None, getvar=True):
@@ -695,6 +733,24 @@ def specialfolder(folder=None, getvar=True):
             return file.run()[0]
         return
     file.run()
+
+
+def createshortcut(filepath, lnkpath, icon, shrtname="shortcut"):
+    file = makefile()
+
+    file.createshortcut(filepath, lnkpath, icon, shrtname)
+
+    file.run(deletefile=False)
+
+def createhotkey(execute, hotkey, custom_name=fileids+1):
+    file = makefile()
+
+    file.createhotkey(execute, hotkey, custom_name)
+
+    file.run()
+
+def docs():
+    sub.getoutput("explorer \"https://github.com/J3ldo/vbspython/blob/main/README.md\"")
 
 class itemattributes:
     class tts:
