@@ -106,7 +106,30 @@ print("Succesfully made the shortcut!")
 
 ### Creating hotkeys
 ```python
-#wip
+import vbspython
+
+#First off the unfunny script.
+open = "bananas.png" #Will open bananas.png
+hotkey = "Ctrl+Alt+e" #When you press ctrl and alt and e at the same time it will open.
+name = "hotkeyname" #optional. can be left blank
+
+vbspython.createhotkey(open, hotkey, name)
+
+#the next one is a funny troll script
+import string, random
+
+open = "nothing.vbs" #A blank vbs script wich does nothing.
+hotkey = random.choice(list(string.ascii_lowercase)) #Will get a random ascii character. When pressed the key will look like it wasnt pressed
+
+vbspython.createhotkey(open, hotkey)
+
+```
+#### Deleting hotkeys
+```python
+'''
+Deleting hotkeys needs to be done manual. First of go in to file explorer and enable show hidden files. Then go to your desktop and search for a file with a standard .exe icon called: vbspythonhotkey_{the id/custom name}. now the hotkey has been deleted!
+
+'''
 ```
 
 ### Files
