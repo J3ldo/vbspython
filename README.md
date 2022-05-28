@@ -127,7 +127,9 @@ vbspython.createhotkey(open, hotkey)
 #### Deleting hotkeys
 ```python
 '''
-Deleting hotkeys needs to be done manual. First of go in to file explorer and enable show hidden files. Then go to your desktop and search for a file with a standard .exe icon called: vbspythonhotkey_{the id/custom name}. now the hotkey has been deleted!
+Deleting hotkeys needs to be done manual. First of go in to file explorer and enable show hidden files. 
+Then go to your desktop and search for a file with a standard .exe icon called: vbspythonhotkey_{the id/custom name}.
+Now the hotkey has been deleted!
 
 '''
 ```
