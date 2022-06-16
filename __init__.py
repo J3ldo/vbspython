@@ -29,7 +29,7 @@ import time
 
 #print(os.path.abspath("main.py"))
 #print(os.path.abspath("main.py").split("\\")[-1])
-fileids = 0
+currentid = 0
 
 
 class dontusethispls:
@@ -83,10 +83,10 @@ class makefile:
         self.inputvar = False
         self.runasadmin = False
         filename2 = filename
-        global fileids
-        if filename == None: filename2 = 'file' if fileids == 0 else f'file{fileids}'
+        global currentid
+        if filename == None: filename2 = 'file' if currentid == 0 else f'file{currentid}'
         self.filename = filename2
-        fileids += 1
+        currentid += 1
 
 
         try: #if the file not exists
@@ -113,7 +113,8 @@ class makefile:
         return dontusethispls(self)
 
 
-    def msgbox(self, text=None, title=None, icon=None, options=None): #make a msgbox
+    def msgbox(self, text=None, title=None, icon="0", options="0", getoutput=True): #make a msgbox
+        if getoutput is True: self.inputvar = True
         if text == None: text = "" #if the text, title is None
         if title == None: title = ""
 
@@ -122,18 +123,17 @@ class makefile:
             opts += icon
         if icon == None and options != None:
             opts += options
+
         if icon != None and options != None:
             opts += options + "+" + icon
 
-        if icon == None: icon = ""
-        if options == None: options = ""
-
         with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f: #writes it into the .vbs file
-            f.write(f'msgbox \"{text}\",{opts},\"{title}\"\n')
+            f.write(f"txt = msgbox(\"{text}\",{opts},\"{title}\")\n")
+            if getoutput:
+                f.write(f"all_vars = all_vars + \"\"\"\" & txt & \"\"\"\" & \",\"\n")
 
     def system(self, cmd, showprompt=False, getouput=False):
-        if not showprompt: sprompt = ", 0, True"
-        if showprompt: sprompt = ""
+        sprompt = ", 0, True" if not showprompt else ""
         if getouput: self.inputvar = True
         with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
             if getouput:
@@ -173,14 +173,12 @@ class makefile:
                     )
 
 
-    def input(self, text=None, title=None, getvar=True): #pretty much the same as msgbox
-        if text == None: text = ""
-        if title == None: title = ""
-        self.inputvar = getvar
+    def input(self, text="", title="", getoutput=True): #pretty much the same as msgbox
+        if getoutput is True: self.inputvar = True
         with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
-            if not getvar:
+            if not getoutput:
                 f.write(f'Inputbox \"{text}\",\"{title}\"\n')
-            elif getvar:
+            elif getoutput:
                 f.write(f'txt=Inputbox(\"{text}\",\"{title}\")\n'
                         f'all_vars = all_vars + \"\"\"\" & txt & \"\"\"\" & \",\"\n')
 
@@ -326,7 +324,7 @@ F16:            F16
                 f"fso.DeleteFolder \"{os.path.abspath(path)}\"\n"
             )
 
-    def createhotkey(self, execute, hotkey, custom_name=fileids):
+    def createhotkey(self, execute, hotkey, custom_name=currentid):
         with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
             f.write(
                 f"""
@@ -346,7 +344,7 @@ fso.GetFile(Desktop & \"\\vbspythonhotkey_{custom_name}.lnk\").Attributes = 34
                 """
             )
 
-    def specialfolder(self, folder=None, getvar=True):
+    def specialfolder(self, folder=None, getoutput=True):
         if folder == None:
             print(
                 """
@@ -378,7 +376,7 @@ This function will give their location on this pc.
                "Set obj = createObject(\"wscript.shell\")\n"
                f"txt = obj.specialfolders(\"{folder}\")\n"
             )
-            if getvar:
+            if getoutput:
                 f.write(
                     f'all_vars = all_vars + \"\"\"\" & txt & \"\"\"\" & \",\"\n'
                 )
@@ -499,10 +497,10 @@ class help:
                 "Fields: \n"
                 "text (text of the input box)\n"
                 "title (the title of the input box)\n"
-                "getvar (gets the variable from the input)\n\n"
+                "getoutput (gets the output from the input)\n\n"
                 "Example: \n"
                 "file = vbspython.makefile()\n"
-                "file.input(title=\"Title!\", text=\"Text\", getvar=True)"
+                "file.input(title=\"Title!\", text=\"Text\", getoutput=True)"
                 "varfrominput = file.run()\n"
                 "print(varfrominput)"
             )
@@ -612,21 +610,27 @@ def presskey(key=None):
     file.presskey(key)
     file.run()
 
-def msgbox(text=None, title=None, icon=None, options=None):
+def msgbox(text=None, title=None, icon=None, options=None, getoutput=True):
     file = makefile()
-    file.msgbox(text=text, title=title, icon=icon, options=options)
+    file.msgbox(text=text, title=title, icon=icon, options=options, getoutput=getoutput)
+
+    if getoutput:
+        return file.run()[0]
+
     file.run()
 
-def input(text=None, title=None):
+def input(text=None, title=None, getoutput=True):
     file = makefile()
     if text == None:
         text = ""
     if title == None:
         title = ""
 
-    file.input(text=text, title=title, getvar=True)
-    output = file.run()
-    return output[0]
+    file.input(text=text, title=title, getoutput=getoutput)
+
+    if getoutput:
+        return file.run()[0]
+    file.run()
 
 def system(cmd, showprompt=False):
     file = makefile()
@@ -635,8 +639,7 @@ def system(cmd, showprompt=False):
     if not showprompt:
         file.system(cmd, getouput=True)
 
-    output = file.run()
-    return output[0]
+    return file.run()[0]
 
 def presskeys(keys):
     file = makefile()
@@ -723,15 +726,14 @@ def say(text):
 
     file.run()
 
-def specialfolder(folder=None, getvar=True):
+def specialfolder(folder=None, getoutput=True):
     file = makefile()
 
-    file.specialfolder(folder, getvar)
+    file.specialfolder(folder, getoutput)
 
-    if getvar:
+    if getoutput:
         if folder != None:
             return file.run()[0]
-        return
     file.run()
 
 
@@ -742,7 +744,7 @@ def createshortcut(filepath, lnkpath, icon, shrtname="shortcut"):
 
     file.run(deletefile=False)
 
-def createhotkey(execute, hotkey, custom_name=fileids+1):
+def createhotkey(execute, hotkey, custom_name=currentid + 1):
     file = makefile()
 
     file.createhotkey(execute, hotkey, custom_name)
@@ -780,7 +782,7 @@ class itemattributes:
                 return "6"
 
             def no(self):
-                return "6"
+                return "7"
 
         class options:
             def ok(self):
