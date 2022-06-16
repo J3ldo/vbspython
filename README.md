@@ -41,6 +41,16 @@ options = vbspython.itemattributes().msgbox().options().ok_cancel()
 vbspython.msgbox(text="Hello!", title="My first message box!", icon=icon, options=options) #will show a message box try it your self
 
 ```
+#### Getting input
+```python
+import vbspython
+
+#This is a simple program which says if you said yes or no 
+if vbspython.msgbox("Yes or no?", options=vbs.itemattributes.msgbox.options().yes_no()) == vbspython.itemattributes.msgbox.returns().no():
+    vbspython.msgbox("You said no!", getoutput=False)
+else:
+    vbspython.msgbox("You said yes!", getoutput=False)
+```
 
 ### Input
 ```python
@@ -115,10 +125,10 @@ name = "hotkeyname" #optional. can be left blank
 
 vbspython.createhotkey(open, hotkey, name)
 
-#the next one is a funny troll script
+#the next one is a funny troll script. It will disable a random key on your keyboard
 import string, random
 
-open = "nothing.vbs" #A blank vbs script wich does nothing.
+open = "nothing.vbs" #A blank vbs script which does nothing.
 hotkey = random.choice(list(string.ascii_lowercase)) #Will get a random ascii character. When pressed the key will look like it wasnt pressed
 
 vbspython.createhotkey(open, hotkey)
@@ -217,7 +227,11 @@ file.run()
 0.0.8 - Made a press keys will press any keys of choice. A sleep that will make the .vbs file sleep. And a presskey that will press a special key leave empty for a list of keys.  
 0.1.0 - Made a help loop and runfile.  
 0.1.1 - Made the getting input system better. Added icons and options in the itemattributes class  
-0.1.2 - Added a runas command this will run the file as administrator. And a tts class with: say, rate, volume (see in attributes), speak (same as say)   
+0.1.2 - Added a runas command this will run the file as administrator. And a tts class with: say, rate, volume (see in attributes), speak (same as say)  
 0.1.3 - Added a copyfile movefile createfolder movefolder deletefolder deletefile copyfolder and did some bug fixes  
-0.1.4 - Added an execute this doesnt stop when opening files like with system  
-0.1.5 - Added special folders  
+0.1.4 - Added an execute this doesnt stop when opening files like with system
+0.1.5 - Added special folders
+0.1.6 - Changelog forgotten
+0.1.7 - Forgot to do the changelog on 0.1.6 and partialy on 0.1.7. I added creating shortcuts to files and added hotkeys.
+0.1.8 - Added the option to get a variable from msgbox. use to see if someone said yes or no using the itemattributes.  
+
