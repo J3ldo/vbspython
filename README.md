@@ -41,7 +41,7 @@ options = vbspython.itemattributes().msgbox().options().ok_cancel()
 vbspython.msgbox(text="Hello!", title="My first message box!", icon=icon, options=options) #will show a message box try it your self
 
 ```
-#### Getting input
+#### Getting output
 ```python
 import vbspython
 
