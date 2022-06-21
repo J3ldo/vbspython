@@ -6,10 +6,27 @@ Current amount of downloads:
 [![Downloads](https://pepy.tech/badge/vbspython)](https://pepy.tech/project/vbspython)
 
 ### Installing
-Install it using the console by saying: pip install vbspython  
+Install it using pip in the console by saying: pip install vbspython   
 Vbspython also can be installed under the following names:  
 vbscript  
 vbs
+
+## What it does
+vbspython does a lot of things. Here are some of them: 
+* Show a msgbox gui on the screen.
+* Show a working input gui on the users screen.
+* Do system commands.
+* Pressing keys.
+* Show the location of special folders like appdata and downloads.
+* Creating shortcuts to files.
+* Creating hotkeys that open a file.
+* Creating folders
+* Deleting folders
+* Deleting files
+* Copy files
+* Copy folders
+* Mocing files
+* Moving folders
 
 ## Example code
 ### Multiple items in one file
@@ -94,7 +111,7 @@ def loop_this():
 
 file.run()
 ```
-###Special folders
+### Special folders
 ```python
 import vbspython
 
