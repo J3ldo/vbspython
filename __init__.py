@@ -86,6 +86,7 @@ class makefile:
         global currentid
         if filename == None: filename2 = 'file' if currentid == 0 else f'file{currentid}'
         self.filename = filename2
+        filename = self.filename
         currentid += 1
 
 
@@ -113,7 +114,7 @@ class makefile:
         return dontusethispls(self)
 
 
-    def msgbox(self, text=None, title=None, icon="0", options="0", getoutput=True): #make a msgbox
+    def msgbox(self, text=None, title=None, icon="0", options="0", getoutput=True, variable=None): #make a msgbox
         if getoutput is True: self.inputvar = True
         if text == None: text = "" #if the text, title is None
         if title == None: title = ""
@@ -128,20 +129,37 @@ class makefile:
             opts += options + "+" + icon
 
         with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f: #writes it into the .vbs file
-            f.write(f"txt = msgbox(\"{text}\",{opts},\"{title}\")\n")
-            if getoutput:
-                f.write(f"all_vars = all_vars + \"\"\"\" & txt & \"\"\"\" & \",\"\n")
+            if variable is not None:
+                fstrstart = "\" & "
+                fstrend = " & \""
+                f.write(f"{variable[0] if not variable[1] else 'unused = '}msgbox(\"{text+fstrstart+variable[0]+fstrend if variable[1] else text}\",{opts},\"{title}\")\n")
 
-    def system(self, cmd, showprompt=False, getouput=False):
+            elif getoutput:
+                f.write(f"txt = msgbox(\"{text}\",{opts},\"{title}\")\n"
+                        f"all_vars = all_vars + \"\"\"\" & txt & \"\"\"\" & \",\"\n")
+            else:
+                f.write(f"msgbox(\"{text}\",{opts},\"{title}\")\n")
+
+    def system(self, cmd, showprompt=False, getouput=True, variable=None):
         sprompt = ", 0, True" if not showprompt else ""
         if getouput: self.inputvar = True
         with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
-            if getouput:
+            if variable is not None:
+                f.write("Set oShell = CreateObject (\"WScript.Shell\")\n"
+                        f"Set {variable[0] if not variable[1] else 'unused = '}oShell.Exec(\"cmd.exe /C {variable[0] if variable[1] else cmd}\")\n"
+                        f"Do While {variable[0][:-3] if not variable[1] else 'unused'}.Status <> 1\n"
+                        "WScript.Sleep 100\n"
+                        "Loop\n"
+                        f"{variable[0] if not variable[1] else 'unused = '}{variable[0][:-3] if not variable[1] else 'unused'}.StdOut.Readall()\n")
+
+            elif getouput:
                 f.write("Set oShell = CreateObject (\"WScript.Shell\")\n"
                     f"Set out = oShell.Exec(\"cmd.exe /C {cmd}\")\n"
                     f"all = out.StdOut.ReadAll\n"
                     f"all_vars = all_vars + \"\"\"\"\"\"\"\" & all & \"\"\"\"\"\"\"\" & \",\"\n"
                         )
+
+
             else:
                 f.write("Set oShell = CreateObject (\"WScript.Shell\")\n"
                         f"oShell.Run \"cmd.exe /C {cmd}\" {sprompt}\n")
@@ -152,6 +170,27 @@ class makefile:
             f.write("Set oShell = CreateObject (\"WScript.Shell\")\n"
                     f"oShell.Run \"{item}\"\n"
                     )
+
+    class Variable:
+        def __init__(self, name):
+            self.name = name
+
+        def reference(self):
+            return self.name, True #True is for checking if its an refrence or if you want to apply it.
+
+        def apply(self):
+            return self.name + " = ", False
+
+        def set(self, item):
+            if not isinstance(item, int) or not isinstance(item, str):
+                raise TypeError("Item must be int or string")
+            else:
+                global filename
+                high_comma = "\""
+                with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{filename}.vbs', 'a') as f:
+                    f.write(
+                        f"{self.name} = {high_comma+item+high_comma if isinstance(item, str) else item}"
+                            )
 
     def createshortcut(self, filepath, lnkpath, icon, shrtname="shortcut"):
         if isinstance(icon, int):
@@ -173,10 +212,15 @@ class makefile:
                     )
 
 
-    def input(self, text="", title="", getoutput=True): #pretty much the same as msgbox
+    def input(self, text="", title="", getoutput=True, variable=None): #pretty much the same as msgbox
         if getoutput is True: self.inputvar = True
         with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
-            if not getoutput:
+            if variable is not None:
+                fstrstart = "\" & "
+                fstrend = " & \""
+                f.write(f"{variable[0] if not variable[1] else 'unused = '}Inputbox(\"{text+fstrstart+variable[0]+fstrend if variable[1] else text}\",\"{title}\")\n")
+
+            elif not getoutput:
                 f.write(f'Inputbox \"{text}\",\"{title}\"\n')
             elif getoutput:
                 f.write(f'txt=Inputbox(\"{text}\",\"{title}\")\n'
@@ -756,63 +800,83 @@ def docs():
 
 class itemattributes:
     class tts:
-        def voice_1(self):
+        @staticmethod
+        def voice_1():
             return "0"
 
-        def voice_2(self):
+        @staticmethod
+        def voice_2():
             return "1"
     class msgbox:
         class returns:
-            def ok(self):
+            
+            @staticmethod
+            def ok():
                 return "1"
 
-            def cancel(self):
+            @staticmethod
+            def cancel():
                 return "2"
 
-            def abort(self):
+            @staticmethod
+            def abort():
                 return "3"
 
-            def retry(self):
+            @staticmethod
+            def retry():
                 return "4"
 
-            def ignore(self):
+            @staticmethod
+            def ignore():
                 return "5"
 
-            def yes(self):
+            @staticmethod
+            def yes():
                 return "6"
 
-            def no(self):
+            @staticmethod
+            def no():
                 return "7"
 
         class options:
-            def ok(self):
+            @staticmethod
+            def ok():
                 return "0"
 
-            def ok_cancel(self):
+            @staticmethod
+            def ok_cancel():
                 return "1"
 
-            def retry_abort_ignore(self):
+            @staticmethod
+            def retry_abort_ignore():
                 return "2"
 
-            def yes_no_cancel(self):
+            @staticmethod
+            def yes_no_cancel():
                 return "3"
 
-            def yes_no(self):
+            @staticmethod
+            def yes_no():
                 return "4"
 
-            def retry_cancel(self):
+            @staticmethod
+            def retry_cancel():
                 return "5"
 
 
-        class icons():
-            def critical(self):
+        class icons:
+            @staticmethod
+            def critical():
                 return "16"
 
-            def questionmark(self):
+            @staticmethod
+            def questionmark():
                 return "32"
 
-            def exclamation(self):
+            @staticmethod
+            def exclamation():
                 return "48"
 
-            def information(self):
+            @staticmethod
+            def information():
                 return "64"
