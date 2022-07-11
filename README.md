@@ -52,8 +52,8 @@ print(vbspython.system("whoami")) #Some attributes from makefile can also be run
 ```python
 import vbspython
 
-icon = vbspython.itemattributes().msgbox().icons().information()
-options = vbspython.itemattributes().msgbox().options().ok_cancel()
+icon = vbspython.itemattributes.msgbox.icons.information()
+options = vbspython.itemattributes.msgbox.options.ok_cancel()
 
 vbspython.msgbox(text="Hello!", title="My first message box!", icon=icon, options=options) #will show a message box try it your self
 
@@ -63,7 +63,7 @@ vbspython.msgbox(text="Hello!", title="My first message box!", icon=icon, option
 import vbspython
 
 #This is a simple program which says if you said yes or no 
-if vbspython.msgbox("Yes or no?", options=vbs.itemattributes.msgbox.options().yes_no()) == vbspython.itemattributes.msgbox.returns().no():
+if vbspython.msgbox("Yes or no?", options=vbs.itemattributes.msgbox.options.yes_no) == vbspython.itemattributes.msgbox.returns.no():
     vbspython.msgbox("You said no!", getoutput=False)
 else:
     vbspython.msgbox("You said yes!", getoutput=False)
@@ -74,6 +74,21 @@ else:
 import vbspython
 
 print(vbspython.input("What do you think of this library?")) #will print the input the user gave
+```
+
+### Variables
+Variables is an easy way to set variables to items in vbscript like output or system. Here is a quick example.  
+```python
+import vbspython as vbs
+
+file = vbs.makefile()
+
+var = file.Variable("myvariable")  # Declare the variable name.
+
+file.system('whoami', variable=var.apply()) #  Apply the variable to the output of system.
+file.msgbox('You are: ', variable=var.reference()) #  Show the output using the reference keyword
+
+file.run() #  Run the file
 ```
 
 ### Pressing keys
@@ -251,4 +266,5 @@ file.run()
 0.1.6 - Changelog forgotten
 0.1.7 - Forgot to do the changelog on 0.1.6 and partialy on 0.1.7. I added creating shortcuts to files and added hotkeys.
 0.1.8 - Added the option to get a variable from msgbox. use to see if someone said yes or no using the itemattributes.  
+0.1.9 - Added the Variable class (see github docs) that applies to input, msgbox, and system. Also added @staticmethod to itemattributes.  
 
