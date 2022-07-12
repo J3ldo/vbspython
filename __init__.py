@@ -86,6 +86,7 @@ class makefile:
         global currentid
         if filename == None: filename2 = 'file' if currentid == 0 else f'file{currentid}'
         self.filename = filename2
+        self.save_copied = False
         filename = self.filename
         currentid += 1
 
@@ -115,6 +116,16 @@ class makefile:
 
 
     def msgbox(self, text=None, title=None, icon="0", options="0", getoutput=True, variable=None): #make a msgbox
+        '''
+        :param text: The text in the msgbox
+        :param title: The title of the msgbox
+        :param icon: The icon. Can be gotten from itemattributes
+        :param options: The options the user has. Can be gotten from itemattributes
+        :param getoutput: If you want to get output from the msgbox.
+        :param variable: The variable from the Variable class
+        :return:
+        '''
+
         if getoutput is True: self.inputvar = True
         if text == None: text = "" #if the text, title is None
         if title == None: title = ""
@@ -141,6 +152,14 @@ class makefile:
                 f.write(f"msgbox(\"{text}\",{opts},\"{title}\")\n")
 
     def system(self, cmd, showprompt=False, getouput=True, variable=None):
+        '''
+        :param cmd: The command to execute.
+        :param showprompt: If the command prompt should be shown.
+        :param getouput: If you want to get the output from the command.
+        :param variable: A variable from the Variable class. To set or user
+        '''
+
+
         sprompt = ", 0, True" if not showprompt else ""
         if getouput: self.inputvar = True
         with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
@@ -166,6 +185,11 @@ class makefile:
 
 
     def execute(self, item):
+        '''
+        :param item: Item to execute.
+        :returns Same as system. But for opening things.
+        '''
+
         with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
             f.write("Set oShell = CreateObject (\"WScript.Shell\")\n"
                     f"oShell.Run \"{item}\"\n"
@@ -182,6 +206,9 @@ class makefile:
             return self.name + " = ", False
 
         def set(self, item):
+            '''
+            :param item: Item to set the variable to. Must be string or int.
+            '''
             if not isinstance(item, int) or not isinstance(item, str):
                 raise TypeError("Item must be int or string")
             else:
@@ -193,6 +220,12 @@ class makefile:
                             )
 
     def createshortcut(self, filepath, lnkpath, icon, shrtname="shortcut"):
+        '''
+        :param filepath: The filepath of the item for the shortcut.
+        :param lnkpath: Path the shortcut will be made in
+        :param icon: The icon of the shortcut needs to be int or a .ico
+        :param shrtname: Name of the shortcut.
+        '''
         if isinstance(icon, int):
             icon = "%SystemRoot%\System32\SHELL32.dll," + str(icon)
             with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
@@ -213,6 +246,12 @@ class makefile:
 
 
     def input(self, text="", title="", getoutput=True, variable=None): #pretty much the same as msgbox
+        '''
+        :param text: The text to appear in the input box.
+        :param title: The title of the input box.
+        :param getoutput: If you want to get output from the answer from the input box.
+        :param variable: To set or use a variable from the Variable class
+        '''
         if getoutput is True: self.inputvar = True
         with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
             if variable is not None:
@@ -228,6 +267,10 @@ class makefile:
 
 
     def presskeys(self, keys):
+        '''
+
+        :param keys: Keys to press
+        '''
         with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
             f.write(
                 f"set oShell = Createobject(\"wscript.shell\")\n"
@@ -235,6 +278,9 @@ class makefile:
             )
 
     def sleep(self, amount):
+        '''
+        :param amount: Time to sleep in ms
+        '''
         amount *= 1000
         with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
             f.write(
@@ -243,6 +289,9 @@ class makefile:
             )
 
     def presskey(self, key=None):
+        '''
+        :param key: The special key to press
+        '''
         if key == None:
             print(
                   "List of keys:\n"
@@ -297,32 +346,59 @@ F16:            F16
                 f"oShell.sendkeys(\"{key_to_send1}{key}{key_to_send2}\")\n"
             )
 
-    def loop(self, func):
-        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
-            f.write(
-                f"do\n"
-            )
-        func()
-        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
-            f.write(
-                f"loop\n"
-            )
+    def loop(self, *args):
+        '''
+        :param *args: The amount of times to loop.
+        '''
+        def inner(func):
+            with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+                if len(args) >= 1:
+                    f.write(
+                        "ffffffffffffggg = 1\n"
+                        f"do While ffffffffffffggg < {int(args[0])}\n"
+                        "ffffffffffffggg = ffffffffffffggg + 1\n"
+                    )
+                else:
+                    f.write("do\n")
+            func()
+            with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+                f.write(
+                    f"loop\n"
+                )
+        return inner
 
-    def runas(self):
+    def runas(self, file=None):
+        '''
+        :param file: The file to run must be a python file.
+        '''
+        if not file.endswith('.py'):
+            raise Exception("You can at the minute only use .py files.")
+
         with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
-            f.write(
-                "Sub RunAsAdmin()\n"
-                "If WScript.Arguments.Named.Exists(\"RunAsAdmin\") Then Exit Sub\n"
-                "CreateObject(\"Shell.Application\").ShellExecute _\n"
-                "\"WScript.exe\", \"\"\"\" & WScript.ScriptFullName & \"\"\" /RunAsAdmin\",\"\",\"runas\", 1\n"
-                "WScript.Quit()\n"
-                "End Sub\n"
-                "RunAsAdmin()\n")
+            if file is None:
+                f.write(
+                    "Sub RunAsAdmin()\n"
+                    "If WScript.Arguments.Named.Exists(\"RunAsAdmin\") Then Exit Sub\n"
+                    "CreateObject(\"Shell.Application\").ShellExecute _\n"
+                    "\"WScript.exe\", \"\"\"\" & WScript.ScriptFullName & \"\"\" /RunAsAdmin\",\"\",\"runas\", 1\n"
+                    "WScript.Quit()\n"
+                    "End Sub\n"
+                    "RunAsAdmin()\n")
+                return
+            else:
+                f.write(
+                "Set shell = CreateObject(\"Shell.Application\")"
+                f"shell.ShellExecute \"python.exe\", \"{os.path.abspath(file)}\",,\"runas\", 1"
+                )
 
             self.runasadmin = True
 
 
     def copyfile(self, oldpath, newpath):
+        '''
+        :param oldpath: The path of the copied file
+        :param newpath: The new path of the copied file
+        '''
         with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
             f.write(
                 f"Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
@@ -339,6 +415,10 @@ F16:            F16
 
 
     def movefile(self, oldpath, newpath):
+        '''
+        :param oldpath: The path of the file
+        :param newpath: The new path of the moved file.
+        '''
         with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
             f.write(
                 f"Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
@@ -347,6 +427,11 @@ F16:            F16
 
 
     def movefolder(self, oldpath, newpath):
+        '''
+
+        :param oldpath: Path of the folder to move.
+        :param newpath: The new path of the moved folder
+        '''
         with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
             f.write(
                 f"Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
@@ -355,6 +440,9 @@ F16:            F16
 
 
     def createfolder(self, path):
+        '''
+        :param path: Path of the folder to create.
+        '''
         with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
             f.write(
                 f"Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
@@ -362,13 +450,60 @@ F16:            F16
             )
 
     def deletefolder(self, path):
+        '''
+        :param path: Path of the folder to delete.
+        '''
         with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
             f.write(
                 f"Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
                 f"fso.DeleteFolder \"{os.path.abspath(path)}\"\n"
             )
 
+    def copy(self, item):
+        '''
+        :param item: Item to copy to clipboard.
+        '''
+
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            f.write(
+                "Set shell = CreateObject(\"wscript.shell\")\n"
+                "Set clip = shell.Exec(\"clip\")\n"
+                f"clip.Stdin.Write \"{item}\"\n"
+                "clip.Stdin.Close()\n"
+            )
+
+    def getcopied(self, getouput=True, variable=None):
+        '''
+
+        :param getouput: If you want to see output when you run it yes or no.
+        :param variable: For the variable in the Variable class
+        '''
+        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            if variable is not None:
+                f.write(
+                    "Set html = CreateObject(\"htmlfile\")\n"
+                    f"{variable[0] if not variable[1] else 'unused = '} = html.ParentWindow.ClipboardData.GetData(\"Text\")\n"
+                )
+
+            elif getouput:
+                self.save_copied = True
+                f.write(
+
+                    "Set html = CreateObject(\"htmlfile\")\n"
+                    "copied = html.ParentWindow.ClipboardData.GetData(\"Text\")\n"
+                )
+            else:
+                f.write(
+                    "Set html = CreateObject(\"htmlfile\")\n"
+                    "html.ParentWindow.ClipboardData.GetData \"Text\" \n")
+
+
     def createhotkey(self, execute, hotkey, custom_name=currentid):
+        '''
+        :param execute: The path of the item of the file to run
+        :param hotkey: The hotkey to press to execute the item.
+        :param custom_name: The custom name of the hotkey. Used for multiple hotkeys.
+        '''
         with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
             f.write(
                 f"""
@@ -388,7 +523,13 @@ fso.GetFile(Desktop & \"\\vbspythonhotkey_{custom_name}.lnk\").Attributes = 34
                 """
             )
 
-    def specialfolder(self, folder=None, getoutput=True):
+    def specialfolder(self, folder=None, getoutput=True, variable=None):
+        '''
+
+        :param folder: The special folder.
+        :param getoutput: If you want to get output from the function.
+        :param variable: The variable for the Variable class.
+        '''
         if folder == None:
             print(
                 """
@@ -416,6 +557,11 @@ This function will give their location on this pc.
 
 
         with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
+            if variable is not None:
+                f.write("Set obj = createObject(\"wscript.shell\")\n"
+                        f"{variable[0] if not variable[1] else 'unused = '}obj.specialfolders(\"{variable[0] if variable[1] else folder}\")\n")
+                return
+
             f.write(
                "Set obj = createObject(\"wscript.shell\")\n"
                f"txt = obj.specialfolders(\"{folder}\")\n"
@@ -428,6 +574,9 @@ This function will give their location on this pc.
 
 
     def deletefile(self, path):
+        '''
+        :param path: Path to the file to delete.
+        '''
         with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:
             f.write(
                 f"Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
@@ -459,6 +608,17 @@ This function will give their location on this pc.
                     'fleobj.close\n'
                     f'Set fleobj = Nothing\n')
 
+        if self.save_copied:
+            with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', 'a') as f:  # writes it into the .vbs file
+                f.write(
+                    'a = Left(wscript.scriptfullname, Len(wscript.scriptfullname) - '
+                    'Len(wscript.scriptname) - 6)\n'
+                    'Set fleobj = CreateObject(\"Scripting.FileSystemObject\")'
+                    '.OpenTextFile(a & \"copied.txt\",2)\n'
+                    'fleobj.WriteLine(copied)\n'
+                    'fleobj.close\n'
+                )
+
         if self.runasadmin:
             sub.run(f'cscript {str(Path(__file__).absolute())[:-11]}\\files\\{self.filename}.vbs', creationflags=0x08000000)
             if deletefile:
@@ -482,12 +642,31 @@ This function will give their location on this pc.
         if self.inputvar:
             with open(f'{str(Path( __file__ ).absolute())[:-11]}\\var.txt', 'r') as r:
                 self.inpvar = r.read()
+
+            if self.save_copied:
+                with open(f'{str(Path(__file__).absolute())[:-11]}\\copied.txt', 'r') as r:
+                    copied = r.read()
+
             try:
-                return ast.literal_eval(self.inpvar) #returns the inpvar given
+                out = ast.literal_eval(self.inpvar)
+                out.append(copied)
+
+                return out #returns the inpvar given
             except:
                 self.inpvar = self.inpvar.replace('\\', "/")
-                return ast.literal_eval(self.inpvar)  # returns the inpvar given
+
+                out = ast.literal_eval(self.inpvar)
+                out.append(copied)
+                return out # returns the inpvar given
+
+        elif self.save_copied:
+            with open(f'{str(Path(__file__).absolute())[:-11]}\\copied.txt', 'r') as r:
+                copied = r.read()
+
+            return [copied]
+
         return
+
 
     def delete(self, file=None, allfiles=False):
         if file == None:
@@ -501,9 +680,9 @@ This function will give their location on this pc.
 
 class help:
     def __init__(self):
-        pass
+        sub.getoutput("explorer https://github.com/J3ldo/vbspython/blob/main/README.md#example-code")
 
-    class makefile:
+    '''class makefile:
         def __init__(self):
             pass
 
@@ -627,7 +806,7 @@ class help:
               "Example:\n"
               "file = vbspython.makefile(filename=\"myfile\")\n"
               "vbspython.runfile(file=\"myfile\", showprompt=True)"
-              "")
+              "")'''
 
 def runfile(file:str, showprompt:bool=False):
     if file.endswith(".vbs"):
@@ -770,6 +949,22 @@ def say(text):
 
     file.run()
 
+def copy(item):
+    file = makefile()
+
+    file.copy(item)
+
+    file.run()
+
+
+def getcopied():
+    file = makefile()
+
+    file.getcopied()
+
+    return file.run()[0]
+
+
 def specialfolder(folder=None, getoutput=True):
     file = makefile()
 
@@ -809,7 +1004,7 @@ class itemattributes:
             return "1"
     class msgbox:
         class returns:
-            
+
             @staticmethod
             def ok():
                 return "1"
