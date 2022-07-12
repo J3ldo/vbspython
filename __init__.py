@@ -90,6 +90,10 @@ class makefile:
         filename = self.filename
         currentid += 1
 
+        if not os.path.exists(str(Path( __file__ ).absolute())[:-11]+"\\copied.txt"):
+            with open(f'{str(Path( __file__ ).absolute())[:-11]}\\copied.txt', 'w') as f:
+                f.write('temp')
+
 
         try: #if the file not exists
             with open(f'{str(Path( __file__ ).absolute())[:-11]}\\files\\{filename2}.vbs', 'x') as f:
