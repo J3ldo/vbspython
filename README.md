@@ -152,6 +152,15 @@ file.run()  # Run the file.
 
 ```
 
+### Copying
+```python
+import vbspython as vbs
+
+vbs.copy("Hello, i am copied.") #Copies: 'Hello, i am copied.' to the clipboard
+print(vbs.getcopied()) #Prints the current copied item on the clipboard
+
+```
+
 ### Creating shortcuts
 ```python
 import vbspython
@@ -286,4 +295,4 @@ file.run()
 0.1.7 - Forgot to do the changelog on 0.1.6 and partialy on 0.1.7. I added creating shortcuts to files and added hotkeys.
 0.1.8 - Added the option to get a variable from msgbox. use to see if someone said yes or no using the itemattributes.  
 0.1.9 - Added the Variable class (see github docs) that applies to input, msgbox, and system. Also added @staticmethod to itemattributes.  
-
+0.2.0 - Big update! What was added in 0.2.0 was: the amount of looping in @loop, and a variable param to specialfolder, :param for all items in makefile to help ide's read it, and added a copy and getcopied function.  
