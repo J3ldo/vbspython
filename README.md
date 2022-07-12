@@ -133,18 +133,18 @@ import vbspython
 path = vbspython.specialfolder("Downloads")
 print(path) #Will print the path to downloads could be useful if your downloading things
 ```
-### Text to speach
+### Text to speech
 ```python
 import vbspython as vbs
 
 file = vbs.makefile()
 
-tts = file.tts()  # Enable the text to speach.
+tts = file.tts()  # Enable the text to speech.
 
 tts.volume(50)  # Set the volume of the text to speech. Cant be higher then 100.  
 tts.rate(1)  # Sets the rate of the speaker. Can't be higher then 10 and must be higher then -10.  
 
-tts.voice(vbs.itemattributer.tts.voice_1())  # Sets the voice of the speaker.  
+tts.voice(vbs.itemattributes.tts.voice_1())  # Sets the voice of the speaker.  
 
 tts.speak("Hello, world.") #Says the text. The same as say.  
 
