@@ -142,11 +142,13 @@ file = vbs.makefile()
 tts = file.tts()  # Enable the text to speach.
 
 tts.volume(50)  # Set the volume of the text to speech. Cant be higher then 100.  
-tts.rate(5)  # Sets the rate of the speaker. Can't be higher then 10.  
-  
+tts.rate(1)  # Sets the rate of the speaker. Can't be higher then 10 and must be higher then -10.  
+
 tts.voice(vbs.itemattributer.tts.voice_1())  # Sets the voice of the speaker.  
-  
+
 tts.speak("Hello, world.") #Says the text. The same as say.  
+
+file.run()  # Run the file.  
 
 ```
 
