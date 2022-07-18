@@ -32,53 +32,8 @@ import time
 currentid = 0
 
 
-class dontusethispls:
-    def __init__(self, outer):
-        self.outer = outer
-        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.outer.filename}.vbs', 'a') as f:
-            f.write(
-                "Set tts = CreateObject(\"SAPI.SpVoice\")\n"
-            )
-
-    def rate(self, rate=0):
-        if int(rate) > 10 or int(rate) < -10:
-            raise Exception("You can't have the rate above 10 or under -10")
-        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.outer.filename}.vbs', 'a') as f:
-            f.write(
-                f"tts.Rate = {rate}\n"
-            )
-
-    def say(self, text):
-        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.outer.filename}.vbs', 'a') as f:
-            f.write(
-                f"tts.Speak \"{text}\"\n"
-            )
-
-    def speak(self, text):
-        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.outer.filename}.vbs', 'a') as f:
-            f.write(
-                f"tts.Speak \"{text}\"\n"
-            )
-
-    def voice(self, speaker):
-        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.outer.filename}.vbs', 'a') as f:
-            f.write(
-                f"Set tts.Voice = tts.GetVoices.Item({speaker})\n"
-            )
-
-    def volume(self, volume):
-        if int(volume) > 100 or int(volume) < 0:
-            raise Exception("Volume can't be higher then 100 or lower then 0")
-
-        with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{self.outer.filename}.vbs', 'a') as f:
-            f.write(
-                f"tts.Volume = {volume}\n"
-            )
-
-
-
-
 class makefile:
+    filename = ""
     def __init__(self, filename=None):
         self.inputvar = False
         self.runasadmin = False
@@ -116,7 +71,8 @@ class makefile:
             f.write(f'all_vars = \"[\"\n')
 
     def tts(self):
-        return dontusethispls(self)
+        from .tts import tts
+        return tts(self)
 
 
     def msgbox(self, text=None, title=None, icon="0", options="0", getoutput=True, variable=None): #make a msgbox
@@ -199,29 +155,9 @@ class makefile:
                     f"oShell.Run \"{item}\"\n"
                     )
 
-    class Variable:
-        def __init__(self, name):
-            self.name = name
-
-        def reference(self):
-            return self.name, True #True is for checking if its an refrence or if you want to apply it.
-
-        def apply(self):
-            return self.name + " = ", False
-
-        def set(self, item):
-            '''
-            :param item: Item to set the variable to. Must be string or int.
-            '''
-            if not isinstance(item, int) or not isinstance(item, str):
-                raise TypeError("Item must be int or string")
-            else:
-                global filename
-                high_comma = "\""
-                with open(f'{str(Path(__file__).absolute())[:-11]}\\files\\{filename}.vbs', 'a') as f:
-                    f.write(
-                        f"{self.name} = {high_comma+item+high_comma if isinstance(item, str) else item}"
-                            )
+    def Variable(self, name):
+        from .variable import Variable
+        return Variable(name, self)
 
     def createshortcut(self, filepath, lnkpath, icon, shrtname="shortcut"):
         '''
@@ -653,14 +589,16 @@ This function will give their location on this pc.
 
             try:
                 out = ast.literal_eval(self.inpvar)
-                out.append(copied)
+                if self.save_copied:
+                    out.append(copied)
 
                 return out #returns the inpvar given
             except:
                 self.inpvar = self.inpvar.replace('\\', "/")
 
                 out = ast.literal_eval(self.inpvar)
-                out.append(copied)
+                if self.save_copied:
+                    out.append(copied)
                 return out # returns the inpvar given
 
         elif self.save_copied:
@@ -967,6 +905,13 @@ def getcopied():
     file.getcopied()
 
     return file.run()[0]
+
+def runas(file):
+    file = makefile()
+
+    file.runas(file)
+
+    file.run()
 
 
 def specialfolder(folder=None, getoutput=True):
