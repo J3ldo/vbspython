@@ -120,12 +120,27 @@ import vbspython
 
 file = vbspython.makefile()
 
-@file.loop
+@file.loop()
 def loop_this():
    file.msgbox("I am indestructable!")
+   
 
 file.run()
 ```
+### Looping an amount of time
+```python
+import vbspython
+
+file = vbspython.makefile()
+
+@file.loop(10)
+def loop_this():
+   file.msgbox("I will be run 10 times!")
+   
+
+file.run()
+```
+
 ### Special folders
 ```python
 import vbspython
